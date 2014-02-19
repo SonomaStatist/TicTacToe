@@ -5,6 +5,8 @@
 //import java.io.*;
 //import java.util.*;
 
+import java.util.Random;
+
 class TicTacToe
 {
 	private	char [][] positions;
@@ -59,7 +61,40 @@ class TicTacToe
 		}
 		return false;
 	}
-	
+
+    public int makeBestMove(int player) {
+        int pos = 0;
+        boolean foundBlank = false;
+
+        for (int i = 1; i <= 3; i++) {
+            for (int j = 1; j < 3; j++) {
+                if (positions[i][j] == ' ') {
+                    foundBlank = true;
+                    positions[i][j] = (char)('0' + (player == 1 ? 2 : 1));
+                    if (Test() != 0) {
+                        positions[i][j] = (char)('0' + player);
+                        pos = 10 * i + j;
+                    }
+                    else {
+                        positions[i][j] = ' ';
+                    }
+                }
+            }
+        }
+
+        while (foundBlank && pos != 0) {
+            Random random = new Random();
+            int x = random.nextInt(3) + 1;
+            int y = random.nextInt(3) + 1;
+
+            if (positions[x][y] == ' ') {
+                positions[x][y] = (char)('0' + player);
+                pos = 10 * x + y;
+            }
+        }
+        return pos;
+    }
+
 	public int Test ()
 	{
 		// look for winning row
