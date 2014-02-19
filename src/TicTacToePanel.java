@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 
 public class TicTacToePanel extends JPanel {
     private TicTacToe ticTacToe;
@@ -15,6 +17,8 @@ public class TicTacToePanel extends JPanel {
     private JLabel title;
     private JLabel stats;
     private DisplayPanel displayPanel;
+    private Image imageX;
+    private Image imageO;
 
     TicTacToePanel() {
         ticTacToe = new TicTacToe();
@@ -24,6 +28,8 @@ public class TicTacToePanel extends JPanel {
         wins = new int[4];
         setBackground(Color.WHITE);
         font = new Font("Arial", Font.PLAIN, 30);
+        imageO = new ImageIcon(getClass().getResource("res/o.jpg")).getImage();
+        imageX = new ImageIcon(getClass().getResource("res/x.jpg")).getImage();
         title = new JLabel("Tic Tac Toe");
         title.setFont(font);
         add(title);
@@ -35,7 +41,7 @@ public class TicTacToePanel extends JPanel {
     }
 
     void UpdatePanel() {
-        String who = new String();
+        String who;
         switch (winner) {
             case 1:
                 who = "X";
@@ -46,6 +52,8 @@ public class TicTacToePanel extends JPanel {
             case 3:
                 who = "Cat";
                 break;
+            default:
+                who = "";
         }
 
         stats.setText(who + " wins!");
@@ -77,8 +85,8 @@ public class TicTacToePanel extends JPanel {
             setBackground(Color.BLACK);
             squares = new TicTacToeSquare[9];
             int s = 0;
-            for (int r = 0; r < 3; r++) {
-                for (int c = 0; c < 3; c++) {
+            for (int r = 1; r <= 3; r++) {
+                for (int c = 1; c <= 3; c++) {
                     squares[s] = new TicTacToeSquare(r, c);
                     add(squares[s]);
                     s++;
@@ -115,6 +123,15 @@ public class TicTacToePanel extends JPanel {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setFont(font);
             char who = ticTacToe.GetPosition(row, col);
+
+            String owner = new String();
+            if (who == '1') {
+                g2.drawImage(imageX, 0, 0, 100, 100, null);
+            }
+            else if (who == '2') {
+                g2.drawImage(imageO, 0, 0, 100, 100, null);
+            }
+            g2.drawString(owner, 35, 60);
         }
 
         @Override
