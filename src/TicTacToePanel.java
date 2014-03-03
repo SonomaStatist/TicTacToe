@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 
 public class TicTacToePanel extends JPanel {
     private TicTacToe ticTacToe;
@@ -35,7 +33,7 @@ public class TicTacToePanel extends JPanel {
         add(title);
         displayPanel = new DisplayPanel();
         add(displayPanel);
-        stats = new JLabel("X: " + wins[1] + "  O: " + wins[2] + "  Cat: " + wins[3]);
+        stats = new JLabel("You: " + wins[1] + "  AI: " + wins[2] + "  Cat: " + wins[3]);
         stats.setFont(font);
         add(stats);
     }
@@ -44,10 +42,10 @@ public class TicTacToePanel extends JPanel {
         String who;
         switch (winner) {
             case 1:
-                who = "X";
+                who = "You";
                 break;
             case 2:
-                who = "O";
+                who = "AI";
                 break;
             case 3:
                 who = "Cat";
@@ -67,7 +65,7 @@ public class TicTacToePanel extends JPanel {
                 wins[winner]++;
                 ticTacToe = new TicTacToe();
                 displayPanel.repaint();
-                stats.setText("X: " + wins[1] + "  O: " + wins[2] + "  Cat: " + wins[3]);
+                stats.setText("You: " + wins[1] + "  AI: " + wins[2] + "  Cat: " + wins[3]);
                 stats.repaint();
             }
         };
@@ -81,7 +79,7 @@ public class TicTacToePanel extends JPanel {
         public TicTacToeSquare[] squares;
 
         DisplayPanel() {
-            setLayout(new GridLayout(3,3,2,2));
+            setLayout(new GridLayout(3, 3, 2, 2));
             setBackground(Color.BLACK);
             squares = new TicTacToeSquare[9];
             int s = 0;
@@ -94,10 +92,16 @@ public class TicTacToePanel extends JPanel {
             }
         }
 
+        @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            if (player == 2) {
+                player = 1;
+                squares[ticTacToe.makeBestMove(2)].paintComponent(g);
+            }
             for (int i = 0; i < 9; i++) {
                 squares[i].repaint();
             }
@@ -106,20 +110,22 @@ public class TicTacToePanel extends JPanel {
 
     class TicTacToeSquare extends JPanel implements MouseListener {
 
-        public int row;
-        public int col;
+        public final int row;
+        public final int col;
+        public
 
         TicTacToeSquare(int row, int col) {
             this.row = row;
             this.col = col;
-            setPreferredSize(new Dimension(100,100));
+            setPreferredSize(new Dimension(100, 100));
             setBackground(Color.WHITE);
             addMouseListener(this);
         }
 
+        @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D)g;
+            Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setFont(font);
             char who = ticTacToe.GetPosition(row, col);
@@ -127,8 +133,7 @@ public class TicTacToePanel extends JPanel {
             String owner = new String();
             if (who == '1') {
                 g2.drawImage(imageX, 0, 0, 100, 100, null);
-            }
-            else if (who == '2') {
+            } else if (who == '2') {
                 g2.drawImage(imageO, 0, 0, 100, 100, null);
             }
             g2.drawString(owner, 35, 60);
@@ -148,16 +153,20 @@ public class TicTacToePanel extends JPanel {
         }
 
         @Override
-        public void mousePressed(MouseEvent mouseEvent) {  }
+        public void mousePressed(MouseEvent mouseEvent) {
+        }
 
         @Override
-        public void mouseReleased(MouseEvent mouseEvent) {  }
+        public void mouseReleased(MouseEvent mouseEvent) {
+        }
 
         @Override
-        public void mouseEntered(MouseEvent mouseEvent) {  }
+        public void mouseEntered(MouseEvent mouseEvent) {
+        }
 
         @Override
-        public void mouseExited(MouseEvent mouseEvent) {  }
+        public void mouseExited(MouseEvent mouseEvent) {
+        }
     }
 
     public static void main(String[] args) {
