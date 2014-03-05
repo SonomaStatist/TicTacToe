@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,8 +25,8 @@ public class TicTacToePanel extends JPanel {
         wins = new int[4];
         setBackground(Color.WHITE);
         font = new Font("Arial", Font.PLAIN, 30);
-        imageO = new ImageIcon(getClass().getResource("res/o.jpg")).getImage();
-        imageX = new ImageIcon(getClass().getResource("res/x.jpg")).getImage();
+        imageO = new ImageIcon(getClass().getResource("/res/o.jpg")).getImage();
+        imageX = new ImageIcon(getClass().getResource("/res/x.jpg")).getImage();
         title = new JLabel("Tic Tac Toe");
         title.setFont(font);
         add(title);
@@ -59,15 +58,12 @@ public class TicTacToePanel extends JPanel {
 
         int delay = 2000;
 
-        ActionListener taskPerformer = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                wins[winner]++;
-                ticTacToe = new TicTacToe();
-                displayPanel.repaint();
-                stats.setText("You: " + wins[1] + "  AI: " + wins[2] + "  Cat: " + wins[3]);
-                stats.repaint();
-            }
+        ActionListener taskPerformer = actionEvent -> {
+            wins[winner]++;
+            ticTacToe = new TicTacToe();
+            displayPanel.repaint();
+            stats.setText("You: " + wins[1] + "  AI: " + wins[2] + "  Cat: " + wins[3]);
+            stats.repaint();
         };
 
         Timer timer = new Timer(delay, taskPerformer);
@@ -92,18 +88,20 @@ public class TicTacToePanel extends JPanel {
             }
         }
 
+        public void paintSquares() {
+            for (TicTacToeSquare square : squares) {
+                square.repaint();
+            }
+        }
+
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (player == 2) {
-                player = 1;
-                squares[ticTacToe.makeBestMove(2)].paintComponent(g);
-            }
-            for (int i = 0; i < 9; i++) {
-                squares[i].repaint();
+            for (TicTacToeSquare square : squares) {
+                square.repaint();
             }
         }
     }
@@ -112,9 +110,8 @@ public class TicTacToePanel extends JPanel {
 
         public final int row;
         public final int col;
-        public
 
-        TicTacToeSquare(int row, int col) {
+        public TicTacToeSquare(int row, int col) {
             this.row = row;
             this.col = col;
             setPreferredSize(new Dimension(100, 100));
@@ -143,11 +140,17 @@ public class TicTacToePanel extends JPanel {
         public void mouseClicked(MouseEvent mouseEvent) {
             boolean goodMove = ticTacToe.Play(row, col, player);
             if (goodMove) {
-                player = player == 1 ? 2 : 1;
                 repaint();
                 winner = ticTacToe.Test();
                 if (winner > 0) {
                     UpdatePanel();
+                } else {
+                    ticTacToe.makeBestMove(2);
+                    displayPanel.repaint();
+                    winner = ticTacToe.Test();
+                    if (winner > 0) {
+                        UpdatePanel();
+                    }
                 }
             }
         }

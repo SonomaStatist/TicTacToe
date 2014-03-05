@@ -5,8 +5,6 @@
 //import java.io.*;
 //import java.util.*;
 
-import com.sun.tools.javac.util.Position;
-
 import java.util.Random;
 
 class TicTacToe {
@@ -59,73 +57,99 @@ class TicTacToe {
     }
 
     public int makeBestMove(int player) {
-        int r = 0, c = 0;
-        boolean foundBlank = false;
-
+        int opponent = player == 1 ? 2 : 1;
         for (int i = 1; i <= 3; i++) {
-            for (int j = 1; j < 3; j++) {
+            for (int j = 1; j <= 3; j++) {
                 if (positions[i][j] == ' ') {
-                    foundBlank = true;
-                    positions[i][j] = (char) ('0' + (player == 1 ? 2 : 1));
-                    if (Test() != 0) {
-                        positions[i][j] = (char) ('0' + player);
-                        r = i;
-                        c = j;
-                    } else {
-                        positions[i][j] = ' ';
+                    positions[i][j] = (char) ('0' + player);
+                    if (Test() == player) {
+                        return 3 * i + j;
                     }
+
+                    positions[i][j] = ' ';
                 }
             }
         }
 
-        while (foundBlank && r != 0 && c != 0) {
+        for (int i = 1; i <= 3; i++) {
+            for (int j = 1; j <= 3; j++) {
+                if (positions[i][j] == ' ') {
+                    positions[i][j] = (char) ('0' + opponent);
+                    if (Test() == opponent) {
+                        positions[i][j] = (char) ('0' + player);
+                        return 3 * i + j;
+                    }
+
+                    positions[i][j] = ' ';
+                }
+            }
+        }
+
+        while (true) {
             Random random = new Random();
             int x = random.nextInt(3) + 1;
             int y = random.nextInt(3) + 1;
 
             if (positions[x][y] == ' ') {
                 positions[x][y] = (char) ('0' + player);
-                r = x;
-                c = y;
+                return 3 * x + y;
             }
         }
-
-        Play(r, c, player);
-        return 3 * r + c;
     }
 
     public int Test() {
         // look for winning row
-        for (int r = 1; r <= 3; r++)
+        for (int r = 1; r <= 3; r++) {
             if (positions[r][1] != ' ') {
                 int count = 1;
-                for (int c = 2; c <= 3; c++)
-                    if (positions[r][c] == positions[r][1])
+                for (int c = 2; c <= 3; c++) {
+                    if (positions[r][c] == positions[r][1]) {
                         count++;
-                if (count == 3)
+                    }
+                }
+                if (count == 3) {
                     return positions[r][1] - '0';
+                }
             }
+        }
+
         // look for winning column
-        for (int c = 1; c <= 3; c++)
+        for (int c = 1; c <= 3; c++) {
             if (positions[1][c] != ' ') {
                 int count = 1;
-                for (int r = 2; r <= 3; r++)
-                    if (positions[r][c] == positions[1][c])
+                for (int r = 2; r <= 3; r++) {
+                    if (positions[r][c] == positions[1][c]) {
                         count++;
-                if (count == 3)
+                    }
+                }
+                if (count == 3) {
                     return positions[1][c] - '0';
+                }
             }
+        }
+
         // look for winning diagonal
-        if (positions[1][1] != ' ')
-            if (positions[2][2] == positions[1][1] && positions[3][3] == positions[1][1])
+        if (positions[1][1] != ' ') {
+            if (positions[2][2] == positions[1][1] && positions[3][3] == positions[1][1]) {
                 return positions[1][1] - '0';
-        if (positions[1][3] != ' ')
-            if (positions[2][2] == positions[1][3] && positions[3][1] == positions[1][3])
+            }
+        }
+        if (positions[1][3] != ' ') {
+            if (positions[2][2] == positions[1][3] && positions[3][1] == positions[1][3]) {
                 return positions[1][3] - '0';
-        for (int r = 1; r <= 3; r++)
-            for (int c = 1; c <= 3; c++)
-                if (positions[r][c] == ' ')
+            }
+        }
+
+        // check if the board is not filled
+        for (int r = 1; r <= 3; r++) {
+            for (int c = 1; c <= 3; c++) {
+                if (positions[r][c] == ' ') {
                     return 0;
+                }
+            }
+        }
+
+        // board is filled, cat's game
         return 3;
     }
 
