@@ -5,10 +5,7 @@
 TicTacToe Frame class; extends Frame class to contain TicTacToe panel
 */
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import java.lang.*;
 
 public class TicTacToeFrame extends JFrame 
 {

@@ -5,11 +5,8 @@
 TicTacToe game interface; extendsApplet class to contain TicTacToe panel
 */
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import java.lang.*;
-import java.applet.Applet;
+import java.awt.*;
 
 public class TicTacToeApplet extends JApplet 
 {
